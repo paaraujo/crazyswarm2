@@ -83,24 +83,24 @@ all:
     custom_topics:
       # State vector, SI. Order: th, dk, dj, we, r, seq
       swarm_state:
-        frequency: 20
+        frequency: 10
         vars: ["swarmFilter.th", "swarmFilter.dk", "swarmFilter.dj",
                "swarmFilter.we", "swarmFilter.r", "swarmFilter.seq"]
 
       # Variances, in the SAME ORDER as swarm_state
       swarm_cov:
-        frequency: 20
+        frequency: 10
         vars: ["swarmCov.th", "swarmCov.dk", "swarmCov.dj",
                "swarmCov.we", "swarmCov.r", "swarmCov.seq"]
 
       # Separations the controller consumes [rad]
       swarm_sep:
-        frequency: 20
+        frequency: 10
         vars: ["swarmFilter.phiK", "swarmFilter.phiJ"]
 
       # Health, at a lower rate
       swarm_health:
-        frequency: 5
+        frequency: 1
         vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
                "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
                
