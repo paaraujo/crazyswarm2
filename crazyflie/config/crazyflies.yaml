@@ -1,50 +1,57 @@
 # named list of all robots
 fileversion: 3
 
+# named list of all robots
 robots:
-  cf231:
+  # Crazyflies brushless
+  C23:
     enabled: true
-    uri: radio://0/80/2M/E7E7E7E7E7
+    uri: radio://0/80/2M/E7E7E7E717
     initial_position: [0.0, 0.0, 0.0]
-    type: cf21  # see robot_types
-    # firmware_params:
-    #   kalman:
-    #     pNAcc_xy: 1.0 # default 0.5
-    # firmware_logging:
-    #   enabled: true
-    #   custom_topics:
-    #     topic_name3: 
-    #       frequency: 1
-    #       vars: ["acc.x", "acc.y"]
-    # reference_frame: "odom_cf231" # use a custom reference frame if no global coordinate system is available
-
-  cf5:
-    enabled: false
-    uri: radio://0/80/2M/E7E7E7E705
-    initial_position: [0.0, -0.5, 0.0]
-    type: cf21  # see robot_types
-    # firmware_params:
-    #   kalman:
-    #     pNAcc_xy: 1.0 # default 0.5
-    #firmware_logging:
-    #  custom_topics:
-    #    topic_name3: 
-    #      frequency: 1
-    #      vars: ["acc.x", "acc.y", "acc.z"]
-    # reference_frame: "odom_cf5" 
+    type: C10X # see robot_types
+    # role: evader
+    firmware_params:
+      tdoa3:
+        hmId: 252
+        hmLId3: 254      # leader
+        hmLId4: 253      # follower
+  C24:
+    enabled: true
+    uri: radio://0/80/2M/E7E7E7E718
+    initial_position: [0.0, 0.0, 0.0]
+    type: C10X # see robot_types
+    # role: pursuer
+    firmware_params:
+      tdoa3:
+        hmId: 254
+        hmLId3: 253      # leader
+        hmLId4: 252      # follower
+  C25:
+    enabled: true
+    uri: radio://0/80/2M/E7E7E7E719
+    initial_position: [0.0, 0.0, 0.0]
+    type: C10X # see robot_types
+    # role: pursuer
+    firmware_params:
+      tdoa3:
+        hmId: 253
+        hmLId3: 252      # leader
+        hmLId4: 254      # follower
 
 # Definition of the various robot types
 robot_types:
-  cf21:
+  C10X:
     motion_capture:
-      tracking: "librigidbodytracker" # one of "vendor", "librigidbodytracker"
+      enabled: false  # IMPORTANT: we are using the UWB sensors for localization
       # only if enabled; see motion_capture.yaml
-      marker: default_single_marker
+      marker: C10X
       dynamics: default
     big_quad: false
     battery:
-      voltage_warning: 3.8  # V
-      voltage_critical: 3.7 # V
+      # voltage_warning: 3.8  # V
+      # voltage_critical: 3.7 # V
+      voltage_warning: 3.4  # V
+      voltage_critical: 3.2 # V
     # firmware_params:
     #   kalman:
     #     pNAcc_xy: 1.0 # default 0.5
@@ -57,31 +64,6 @@ robot_types:
     #    topic_name3: 
     #      frequency: 1
     #      vars: ["acc.x", "acc.y", "acc.z"]
-    # reference_frame: "odom" 
-
-  cf21_mocap_deck:
-    motion_capture:
-      tracking: "librigidbodytracker" # one of "vendor", "librigidbodytracker"
-      # only if enabled; see motion_capture.yaml
-      marker: mocap_deck
-      dynamics: default
-    big_quad: false
-    battery:
-      voltage_warning: 3.8  # V
-      voltage_critical: 3.7 # V
-    # firmware_params:
-    #   kalman:
-    #     pNAcc_xy: 1.0 # default 0.5
-    #firmware_logging:
-    #   enabled: true
-    #   default_topics:
-    #   pose:
-    #     frequency: 1 # Hz
-    #   custom_topics:
-    #    topic_name3: 
-    #      frequency: 1
-    #      vars: ["acc.x", "acc.y", "acc.z"]
-    # reference_frame: "mocap" 
 
 # global settings for all robots
 all:
@@ -90,12 +72,38 @@ all:
   firmware_logging:
     enabled: true
     default_topics:
-     # remove to disable default topic
+      # remove to disable default topic
       pose:
         frequency: 10 # Hz
       status:
-        frequency: 1 # Hz
-    #custom_topics:
+        frequency: 1  # Hz
+      odom:
+        frequency: 10
+
+    custom_topics:
+      # State vector, SI. Order: th, dk, dj, we, r, seq
+      swarm_state:
+        frequency: 20
+        vars: ["swarmFilter.th", "swarmFilter.dk", "swarmFilter.dj",
+               "swarmFilter.we", "swarmFilter.r", "swarmFilter.seq"]
+
+      # Variances, in the SAME ORDER as swarm_state
+      swarm_cov:
+        frequency: 20
+        vars: ["swarmCov.th", "swarmCov.dk", "swarmCov.dj",
+               "swarmCov.we", "swarmCov.r", "swarmCov.seq"]
+
+      # Separations the controller consumes [rad]
+      swarm_sep:
+        frequency: 20
+        vars: ["swarmFilter.phiK", "swarmFilter.phiJ"]
+
+      # Health, at a lower rate
+      swarm_health:
+        frequency: 5
+        vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
+               "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
+               
     #  topic_name1:
     #    frequency: 10 # Hz
     #    vars: ["stateEstimateZ.x", "stateEstimateZ.y", "stateEstimateZ.z", "pm.vbat"]
@@ -104,12 +112,48 @@ all:
     #    vars: ["stabilizer.roll", "stabilizer.pitch", "stabilizer.yaw"]
   # firmware parameters for all drones (use robot_types/type_name to set per type, or
   # robots/drone_name to set per drone)
+
+
   firmware_params:
     commander:
       enHighLevel: 1
     stabilizer:
       estimator: 2 # 1: complementary, 2: kalman
-      controller: 2 # 1: PID, 2: mellinger
+      controller: 1 # 1: PID, 2: mellinger
+    # velCtlPid:
+    #   vxKp: 17.0
+    #   vxKi: 14.0
+    #   vxKd: 1.0
+    #   vxKFF: 0.0
+    #   vyKp: 17.0
+    #   vyKi: 14.0
+    #   vyKd: 1.0
+    #   vyKFF: 0.0
+    # posCtlPid:
+    #   xKp: 1.0
+    #   xKi: 0.05
+    #   xKd: 0.1
+    #   yKp: 1.0
+    #   yKi: 0.05
+    #   yKd: 0.1
+    #   zKp: 2.0
+    #   zKi: 0.70
+    #   zKd: 0.1
+    # ctrlMel:
+    #   mass: 0.040 #mass for crazyflie with box
+    #   kp_xy: 0.1
+    #   kd_xy: 0.2
+    #   ki_xy: 0.005
+    # pid_attitude:
+    #   pitch_kd: 0.0
+    #   pitch_ki: 3.0
+    #   pitch_kp: 6.0
+    #   roll_kd: 0.0
+    #   roll_ki: 3.0
+    #   roll_kp: 6.0
+    #   yaw_kd: 0.35
+    #   yaw_ki: 1.0
+    #   yaw_kp: 6.0
     # ring:
     #   effect: 16 # 6: double spinner, 7: solid color, 16: packetRate
     #   solidBlue: 255 # if set to solid color
@@ -119,10 +163,79 @@ all:
     locSrv:
       extPosStdDev: 1e-3
       extQuatStdDev: 0.5e-1
-    # kalman:
-    #   resetEstimation: 1
-  # reference frame for on-board state-estimate of all drones (use robot_types/type_name to set per type, or
-  # robots/drone_name to set per drone)
+    kalman:
+      resetEstimation: 1
+
+    # --- trajectory -------------------------------------------------------
+    # Coefficients come from tools/swarm/fit_elevation.py
+    # Saddle
+    swarmCurve:
+      cx: 0.0              # encirclement centre X [m]
+      cy: 0.0              # encirclement centre Y [m]
+      cz: 1.0              # centre altitude above the anchor plane [m], > 0
+      K: 2                 # harmonic order in use, 0..4 (0 = flat circle)
+      b0: 0.000073         # elevation profile, constant term [rad]
+      a1: 0.0              # cos(theta)   [rad]
+      b1: 0.000408         # sin(theta)   [rad]
+      a2: -0.349015        # cos(2 theta) [rad]
+      b2: 0.0              # sin(2 theta) [rad]
+      a3: 0.0              # cos(3 theta) [rad]
+      b3: 0.0              # sin(3 theta) [rad]
+      a4: 0.0              # cos(4 theta) [rad]
+      b4: 0.0              # sin(4 theta) [rad]
+
+    # Three-lobed crown
+    # swarmCurve:
+    #   cx: 0.0              # encirclement centre X [m]
+    #   cy: 0.0              # encirclement centre Y [m]
+    #   cz: 1.0              # centre altitude above the anchor plane [m], > 0
+    #   K: 3                 # harmonic order in use, 0..4 (0 = flat circle)
+    #   b0: 0.0              # elevation profile, constant term [rad]
+    #   a1: -0.000093        # cos(theta)   [rad]
+    #   b1: 0.0              # sin(theta)   [rad]
+    #   a2: 0.0              # cos(2 theta) [rad]
+    #   b2: 0.0              # sin(2 theta) [rad]
+    #   a3: -0.436715        # cos(3 theta) [rad]
+    #   b3: 0.0              # sin(3 theta) [rad]
+    #   a4: 0.0              # cos(4 theta) [rad]
+    #   b4: 0.0              # sin(4 theta) [rad]    
+
+    # --- estimator --------------------------------------------------------
+    swarmFilter:
+      en: 1                # run the filter
+      rst: 0               # write 1 to force re-seeding; self-clearing
+      n: 3                 # agents in the ring -> nominal spacing 2*pi/n
+      wz: 0.0              # commanded angular rate [rad/s]
+
+      sigA: 0.03           # anchor range noise, one sigma [m]
+      sigC: 0.03           # chord noise, one sigma [m]
+      gate: 25.0           # innovation gate, sigma SQUARED (25 = 5 sigma)
+
+      qTh: 0.001           # process noise, common phase [rad^2/s]
+      qD: 0.00001          # process noise, formation errors [rad^2/s] -- keep << qTh
+      qW: 0.0001           # process noise, rate error [rad^2/s^3]
+      qR: 0.00001          # process noise, radius [m^2/s]
+
+      pTh: 0.25            # initial variance, phase [rad^2]
+      pD: 0.50             # initial variance, formation errors [rad^2] -- keep large
+      pW: 0.25             # initial variance, rate error [(rad/s)^2]
+      pR: 0.09             # initial variance, radius [m^2]
+
+    # Parameters for the Swarm module
+    tdoa3:
+      hmTwr: 1
+      hmTdoa: 1
+      hmTwrEstPos: 1
+      hmTwrTXPos: 0        # keep at 0 -- see below
+      hmOutTh: 0.5
+      hmMaxReply: 0.0
+      hmTofAge: 200
+      stddev: 0.1
+      twrStd: 0.1
+      hmLId0: 0   # origin
+      hmLId1: 1   # x+
+      hmLId2: 2   # y+
+
   reference_frame: "world"
   broadcasts:
     num_repeats: 15 # number of times broadcast commands are repeated
