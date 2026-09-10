@@ -169,20 +169,20 @@ all:
     # --- trajectory -------------------------------------------------------
     # Coefficients come from tools/swarm/fit_elevation.py
     # Saddle
-    swarmCurve:
-      cx: 0.0              # encirclement centre X [m]
-      cy: 0.0              # encirclement centre Y [m]
-      cz: 1.0              # centre altitude above the anchor plane [m], > 0
-      K: 2                 # harmonic order in use, 0..4 (0 = flat circle)
-      b0: 0.000073         # elevation profile, constant term [rad]
-      a1: 0.0              # cos(theta)   [rad]
-      b1: 0.000408         # sin(theta)   [rad]
-      a2: -0.349015        # cos(2 theta) [rad]
-      b2: 0.0              # sin(2 theta) [rad]
-      a3: 0.0              # cos(3 theta) [rad]
-      b3: 0.0              # sin(3 theta) [rad]
-      a4: 0.0              # cos(4 theta) [rad]
-      b4: 0.0              # sin(4 theta) [rad]
+    # swarmCurve:
+    #   cx: 0.0              # encirclement centre X [m]
+    #   cy: 0.0              # encirclement centre Y [m]
+    #   cz: 1.0              # centre altitude above the anchor plane [m], > 0
+    #   K: 2                 # harmonic order in use, 0..4 (0 = flat circle)
+    #   b0: 0.000073         # elevation profile, constant term [rad]
+    #   a1: 0.0              # cos(theta)   [rad]
+    #   b1: 0.000408         # sin(theta)   [rad]
+    #   a2: -0.349015        # cos(2 theta) [rad]
+    #   b2: 0.0              # sin(2 theta) [rad]
+    #   a3: 0.0              # cos(3 theta) [rad]
+    #   b3: 0.0              # sin(3 theta) [rad]
+    #   a4: 0.0              # cos(4 theta) [rad]
+    #   b4: 0.0              # sin(4 theta) [rad]
 
     # Three-lobed crown
     # swarmCurve:
@@ -199,6 +199,22 @@ all:
     #   b3: 0.0              # sin(3 theta) [rad]
     #   a4: 0.0              # cos(4 theta) [rad]
     #   b4: 0.0              # sin(4 theta) [rad]    
+
+    # Flat circle
+    swarmCurve:
+      cx: 0.0              # encirclement centre X [m]
+      cy: 0.0              # encirclement centre Y [m]
+      cz: 1.0              # centre altitude above the anchor plane [m], > 0
+      K: 0                 # harmonic order in use, 0..4 (0 = flat circle)
+      b0: 0.0              # elevation profile, constant term [rad]
+      a1: 0.0              # cos(theta)   [rad]
+      b1: 0.0              # sin(theta)   [rad]
+      a2: 0.0              # cos(2 theta) [rad]
+      b2: 0.0              # sin(2 theta) [rad]
+      a3: 0.0              # cos(3 theta) [rad]
+      b3: 0.0              # sin(3 theta) [rad]
+      a4: 0.0              # cos(4 theta) [rad]
+      b4: 0.0              # sin(4 theta) [rad]
 
     # --- estimator --------------------------------------------------------
     swarmFilter:
