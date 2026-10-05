@@ -16,7 +16,7 @@ robots:
         hmLId3: 254      # leader
         hmLId4: 253      # follower
       kalman:
-        initialZ: 1.05           # <-- measured height of THIS tripod
+        initialZ: 1.15           # <-- measured height of THIS tripod
         resetEstimation: 1       # applied after initialZ (map is sorted)
   C24:
     enabled: true
@@ -30,7 +30,7 @@ robots:
         hmLId3: 253      # leader
         hmLId4: 252      # follower
       kalman:
-        initialZ: 1.05           # <-- measured height of THIS tripod
+        initialZ: 1.15           # <-- measured height of THIS tripod
         resetEstimation: 1       # applied after initialZ (map is sorted)
   C25:
     enabled: true
@@ -44,7 +44,7 @@ robots:
         hmLId3: 252      # leader
         hmLId4: 254      # follower
       kalman:
-        initialZ: 1.05           # <-- measured height of THIS tripod
+        initialZ: 1.15           # <-- measured height of THIS tripod
         resetEstimation: 1       # applied after initialZ (map is sorted)
 
 # Definition of the various robot types
@@ -83,11 +83,11 @@ all:
     default_topics:
       # remove to disable default topic
       pose:
-        frequency: 10 # Hz
+        frequency: 25 # Hz
       status:
         frequency: 1  # Hz
       odom:
-        frequency: 10
+        frequency: 1
 
     custom_topics:
       # State vector, SI. Order: th, dk, dj, we, r, seq
@@ -256,7 +256,7 @@ all:
       hmMaxReply: 0.0
       hmTofAge: 200
       stddev: 0.1
-      twrStd: 0.15
+      twrStd: 0.1
       hmLId0: 0   # origin
       hmLId1: 1   # x+
       hmLId2: 2   # y+
