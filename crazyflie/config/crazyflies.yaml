@@ -126,9 +126,11 @@ all:
   firmware_params:
     commander:
       enHighLevel: 1
+
     stabilizer:
       estimator: 2 # 1: complementary, 2: kalman
       controller: 1 # 1: PID, 2: mellinger
+
     # velCtlPid:
     #   vxKp: 17.0
     #   vxKi: 14.0
@@ -172,8 +174,9 @@ all:
     locSrv:
       extPosStdDev: 1e-3
       extQuatStdDev: 0.5e-1
-    kalman:
-      resetEstimation: 1
+
+    # kalman:
+    #   resetEstimation: 1
 
     # --- trajectory -------------------------------------------------------
     # Coefficients come from tools/swarm/fit_elevation.py
@@ -213,7 +216,7 @@ all:
     swarmCurve:
       cx: 0.0              # encirclement centre X [m]
       cy: 0.0              # encirclement centre Y [m]
-      cz: 1.0              # centre altitude above the anchor plane [m], > 0
+      cz: 1.5              # centre altitude above the anchor plane [m], > 0
       K: 0                 # harmonic order in use, 0..4 (0 = flat circle)
       b0: 0.0              # elevation profile, constant term [rad]
       a1: 0.0              # cos(theta)   [rad]
@@ -255,11 +258,14 @@ all:
       hmOutTh: 0.5
       hmMaxReply: 0.0
       hmTofAge: 200
-      # stddev: 0.1        # TDoA noise
       twrStd: 0.05
       hmLId0: 0   # origin
       hmLId1: 1   # x+
       hmLId2: 2   # y+
+      # stddev: 0.1        # TDoA noise
+    
+    loco:
+      mode: 3              # 3 = TDoA3 (required for hybrid mode)
 
   reference_frame: "world"
   broadcasts:
