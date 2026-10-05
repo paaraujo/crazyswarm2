@@ -15,6 +15,9 @@ robots:
         hmId: 252
         hmLId3: 254      # leader
         hmLId4: 253      # follower
+      kalman:
+        initialZ: 1.05           # <-- measured height of THIS tripod
+        resetEstimation: 1       # applied after initialZ (map is sorted)
   C24:
     enabled: true
     uri: radio://0/80/2M/E7E7E7E718
@@ -26,6 +29,9 @@ robots:
         hmId: 254
         hmLId3: 253      # leader
         hmLId4: 252      # follower
+      kalman:
+        initialZ: 1.05           # <-- measured height of THIS tripod
+        resetEstimation: 1       # applied after initialZ (map is sorted)
   C25:
     enabled: true
     uri: radio://0/80/2M/E7E7E7E719
@@ -37,6 +43,9 @@ robots:
         hmId: 253
         hmLId3: 252      # leader
         hmLId4: 254      # follower
+      kalman:
+        initialZ: 1.05           # <-- measured height of THIS tripod
+        resetEstimation: 1       # applied after initialZ (map is sorted)
 
 # Definition of the various robot types
 robot_types:
