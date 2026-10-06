@@ -112,7 +112,8 @@ all:
         frequency: 1
         # vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
         #        "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
-        vars: ["tdoa3.hmSeqOk", "tdoa3.hmEst", "tdoa3.hmTx"]
+        vars: ["tdoaEngine.stRx", "tdoaEngine.stTime",
+               "tdoa3.hmTx", "tdoa3.hmSeqOk", "tdoa3.hmEst"]
       
       # Per-slot TWR ranges: 0-2 anchors, 3 leader, 4 follower
       swarm_ranges:
