@@ -116,7 +116,7 @@ all:
       # Per-slot TWR ranges: 0-2 anchors, 3 leader, 4 follower
       swarm_ranges:
         frequency: 10
-        vars: ["tdoa3.hmD0", "tdoa3.hmD1", "tdoa3.hmD2",
+        vars: ["tdoa3.hmD0", "tdoa3.hmD1", "tdoa3.hmD2", "tdoa3.hmD3", "tdoa3.hmD4",
                "tdoa3.hmRT0", "tdoa3.hmRT1", "tdoa3.hmRT2"]
                
     #  topic_name1:
