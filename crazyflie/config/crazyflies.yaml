@@ -110,8 +110,9 @@ all:
       # Health, at a lower rate
       swarm_health:
         frequency: 1
-        vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
-               "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
+        # vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
+        #        "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
+        vars: ["tdoa3.hmSeqOk", "tdoa3.hmEst", "tdoa3.hmTx"]
       
       # Per-slot TWR ranges: 0-2 anchors, 3 leader, 4 follower
       swarm_ranges:
@@ -262,6 +263,8 @@ all:
       pR: 0.09             # initial variance, radius [m^2]
 
     # Parameters for the Swarm module
+    loco:
+      mode: 3              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
     tdoa3:
       hmTwr: 1
       hmTdoa: 0            # Undertermined on 3 anchors
@@ -275,9 +278,6 @@ all:
       hmLId1: 1   # x+
       hmLId2: 2   # y+
       # stddev: 0.1        # TDoA noise
-    
-    loco:
-      mode: 3              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
 
   reference_frame: "world"
   broadcasts:
