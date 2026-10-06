@@ -83,7 +83,7 @@ all:
     default_topics:
       # remove to disable default topic
       pose:
-        frequency: 25 # Hz
+        frequency: 10 # Hz
       status:
         frequency: 1  # Hz
       odom:
@@ -117,7 +117,7 @@ all:
       swarm_ranges:
         frequency: 10
         vars: ["tdoa3.hmD0", "tdoa3.hmD1", "tdoa3.hmD2",
-               "tdoa3.hmD3", "tdoa3.hmD4"]
+               "tdoa3.hmRT0", "tdoa3.hmRT1", "tdoa3.hmRT2"]
                
     #  topic_name1:
     #    frequency: 10 # Hz
