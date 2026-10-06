@@ -277,7 +277,7 @@ all:
       # stddev: 0.1        # TDoA noise
     
     loco:
-      mode: 1              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
+      mode: 3              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
 
   reference_frame: "world"
   broadcasts:
