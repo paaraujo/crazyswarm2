@@ -112,6 +112,12 @@ all:
         frequency: 1
         vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
                "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
+      
+      # Per-slot TWR ranges: 0-2 anchors, 3 leader, 4 follower
+      swarm_ranges:
+        frequency: 10
+        vars: ["tdoa3.hmD0", "tdoa3.hmD1", "tdoa3.hmD2",
+               "tdoa3.hmD3", "tdoa3.hmD4"]
                
     #  topic_name1:
     #    frequency: 10 # Hz
