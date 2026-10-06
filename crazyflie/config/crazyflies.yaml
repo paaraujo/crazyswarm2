@@ -154,16 +154,16 @@ all:
     #   vyKi: 14.0
     #   vyKd: 1.0
     #   vyKFF: 0.0
-    # posCtlPid:
-    #   xKp: 1.0
-    #   xKi: 0.05
-    #   xKd: 0.1
-    #   yKp: 1.0
-    #   yKi: 0.05
-    #   yKd: 0.1
-    #   zKp: 2.0
-    #   zKi: 0.70
-    #   zKd: 0.1
+    posCtlPid:
+      xKp: 0.6
+      # xKi: 0.05
+      # xKd: 0.1
+      yKp: 0.6
+      # yKi: 0.05
+      # yKd: 0.1
+      # zKp: 2.0
+      # zKi: 0.70
+      # zKd: 0.1
     # ctrlMel:
     #   mass: 0.040 #mass for crazyflie with box
     #   kp_xy: 0.1
@@ -274,7 +274,7 @@ all:
       hmOutTh: 0.5
       hmMaxReply: 0.0
       hmTofAge: 200
-      twrStd: 0.05
+      twrStd: 0.1
       hmLId0: 0   # origin
       hmLId1: 1   # x+
       hmLId2: 2   # y+
