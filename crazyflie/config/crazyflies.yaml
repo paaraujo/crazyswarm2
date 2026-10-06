@@ -118,7 +118,12 @@ all:
         frequency: 10
         vars: ["tdoa3.hmD0", "tdoa3.hmD1", "tdoa3.hmD2", "tdoa3.hmD3", "tdoa3.hmD4",
                "tdoa3.hmRT0", "tdoa3.hmRT1", "tdoa3.hmRT2"]
-               
+      
+      # TWR ranges
+      twr_ranges:
+        frequency: 10
+        vars: ["twr.distance0", "twr.distance1", "twr.distance2"]
+        
     #  topic_name1:
     #    frequency: 10 # Hz
     #    vars: ["stateEstimateZ.x", "stateEstimateZ.y", "stateEstimateZ.z", "pm.vbat"]
@@ -271,7 +276,7 @@ all:
       # stddev: 0.1        # TDoA noise
     
     loco:
-      mode: 3              # 3 = TDoA3 (required for hybrid mode)
+      mode: 1              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
 
   reference_frame: "world"
   broadcasts:
