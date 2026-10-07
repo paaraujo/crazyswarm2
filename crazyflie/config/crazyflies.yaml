@@ -13,8 +13,8 @@ robots:
     firmware_params:
       tdoa3:
         hmId: 252
-        hmLId3: 254      # leader
-        hmLId4: 253      # follower
+        hmLId5: 254      # leader
+        hmLId6: 253      # follower
       kalman:
         initialZ: 0.60           # <-- measured height of THIS tripod
   C24:
@@ -26,8 +26,8 @@ robots:
     firmware_params:
       tdoa3:
         hmId: 254
-        hmLId3: 253      # leader
-        hmLId4: 252      # follower
+        hmLId5: 253      # leader
+        hmLId6: 252      # follower
       kalman:
         initialZ: 0.60           # <-- measured height of THIS tripod
   C25:
@@ -39,8 +39,8 @@ robots:
     firmware_params:
       tdoa3:
         hmId: 253
-        hmLId3: 252      # leader
-        hmLId4: 254      # follower
+        hmLId5: 252      # leader
+        hmLId6: 254      # follower
       kalman:
         initialZ: 0.60           # <-- measured height of THIS tripod
 
