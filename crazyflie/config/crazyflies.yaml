@@ -134,6 +134,11 @@ all:
         frequency: 10
         vars: ["tdoa3.hmD5", "tdoa3.hmD6"]              # 8 bytes
 
+      # The encirclement curve, in the same order as the firmware's
+      swarm_curve:
+        frequency: 1
+        vars: ["swarmCurve.cx", "swarmCurve.cy", "swarmCurve.cz",
+               "swarmCurve.r", "swarmCurve.b0", "swarmCurve.K"]
 
   firmware_params:
     commander:
@@ -249,17 +254,10 @@ all:
     swarmCurve:
       cx: 0.0              # encirclement centre X [m]
       cy: 0.0              # encirclement centre Y [m]
-      cz: 1.5              # centre altitude above the anchor plane [m], > 0
+      cz: 0.6              # centre altitude above the anchor plane [m], > 0
+      r:  0.6              # radius of the encirclement [m], > 0
       K: 0                 # harmonic order in use, 0..4 (0 = flat circle)
       b0: 0.0              # elevation profile, constant term [rad]
-      a1: 0.0              # cos(theta)   [rad]
-      b1: 0.0              # sin(theta)   [rad]
-      a2: 0.0              # cos(2 theta) [rad]
-      b2: 0.0              # sin(2 theta) [rad]
-      a3: 0.0              # cos(3 theta) [rad]
-      b3: 0.0              # sin(3 theta) [rad]
-      a4: 0.0              # cos(4 theta) [rad]
-      b4: 0.0              # sin(4 theta) [rad]
 
     # --- estimator --------------------------------------------------------
     swarmFilter:
@@ -285,7 +283,6 @@ all:
     # --- controller -------------------------------------------------------
     swarmCtrl:                 # NEW group
       en: 0                    # engage from your ROS node after takeoff
-      rTgt: 0.60
       wNom: 0.20
       kPhi: 0.0                # gain for phase error (0 for single-drone tests)
       kR: 0.8
