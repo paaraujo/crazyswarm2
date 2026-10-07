@@ -278,6 +278,8 @@ all:
       hmLId0: 0   # origin
       hmLId1: 1   # x+
       hmLId2: 2   # y+
+      hmLId3: 3   
+      hmLId4: 4
       # stddev: 0.1        # TDoA noise
 
   reference_frame: "world"
