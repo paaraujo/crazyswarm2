@@ -16,8 +16,7 @@ robots:
         hmLId3: 254      # leader
         hmLId4: 253      # follower
       kalman:
-        initialZ: 1.15           # <-- measured height of THIS tripod
-        resetEstimation: 1       # applied after initialZ (map is sorted)
+        initialZ: 0.60           # <-- measured height of THIS tripod
   C24:
     enabled: true
     uri: radio://0/80/2M/E7E7E7E718
@@ -30,8 +29,7 @@ robots:
         hmLId3: 253      # leader
         hmLId4: 252      # follower
       kalman:
-        initialZ: 1.15           # <-- measured height of THIS tripod
-        resetEstimation: 1       # applied after initialZ (map is sorted)
+        initialZ: 0.60           # <-- measured height of THIS tripod
   C25:
     enabled: true
     uri: radio://0/80/2M/E7E7E7E719
@@ -44,8 +42,7 @@ robots:
         hmLId3: 252      # leader
         hmLId4: 254      # follower
       kalman:
-        initialZ: 1.15           # <-- measured height of THIS tripod
-        resetEstimation: 1       # applied after initialZ (map is sorted)
+        initialZ: 0.60           # <-- measured height of THIS tripod
 
 # Definition of the various robot types
 robot_types:
@@ -86,55 +83,56 @@ all:
         frequency: 10 # Hz
       status:
         frequency: 1  # Hz
-      odom:
-        frequency: 1
+      # odom:
+      #   frequency: 1
 
     custom_topics:
-      # State vector, SI. Order: th, dk, dj, we, r, seq
+      # State vector, SI. Order is the EKF's own: th, dk, dj, we, r, dz.
+      # swarm_cov below uses the SAME order so values[i] pairs with values[i].
       swarm_state:
         frequency: 10
         vars: ["swarmFilter.th", "swarmFilter.dk", "swarmFilter.dj",
-               "swarmFilter.we", "swarmFilter.r", "swarmFilter.seq"]
+               "swarmFilter.we", "swarmFilter.r", "swarmFilter.dz",
+               "swarmFilter.seq"] 
 
-      # Variances, in the SAME ORDER as swarm_state
+      # Variances [rad^2 / (rad/s)^2 / m^2], SAME ORDER as swarm_state.
       swarm_cov:
         frequency: 10
         vars: ["swarmCov.th", "swarmCov.dk", "swarmCov.dj",
-               "swarmCov.we", "swarmCov.r", "swarmCov.seq"]
+               "swarmCov.we", "swarmCov.r", "swarmCov.dz",
+               "swarmCov.seq"] 
 
-      # Separations the controller consumes [rad]
-      swarm_sep:
+      # Separations the controller regulates [rad], and its output.
+      swarm_ctrl:
         frequency: 10
-        vars: ["swarmFilter.phiK", "swarmFilter.phiJ"]
+        vars: ["swarmFilter.phiK", "swarmFilter.phiJ",
+               "swarmCtrl.ePhi", "swarmCtrl.eR",
+               "swarmCtrl.vx", "swarmCtrl.vy"]
+
+      # Engagement state and refusal reason. Separate because these are
+      # integers and belong at a lower rate.
+      swarm_eng:
+        frequency: 2
+        vars: ["swarmCtrl.eng", "swarmCtrl.blk", "swarmCtrl.why",
+               "swarmDiagnostics.init"]
 
       # Health, at a lower rate
       swarm_health:
         frequency: 1
-        # vars: ["swarmDiagnostics.dTh", "swarmDiagnostics.nis",
-        #        "swarmDiagnostics.nAcc", "swarmDiagnostics.nRej"]
-        vars: ["tdoaEngine.stRx", "tdoaEngine.stTime",
-               "tdoa3.hmTx", "tdoa3.hmSeqOk", "tdoa3.hmEst"]
+        vars: ["tdoaEngine.stRx", "tdoa3.hmSeqOk", "tdoa3.hmEst",
+               "swarmDiagnostics.nis", "swarmDiagnostics.nAcc",
+               "swarmDiagnostics.nRej"]
       
-      # Per-slot TWR ranges: 0-2 anchors, 3 leader, 4 follower
-      swarm_ranges:
+      # Anchor ranges [m]. 0.0 = no measurement in the last 500 ms.
+      swarm_anchors:
         frequency: 10
-        # vars: ["tdoa3.hmD3", "tdoa3.hmD4", "tdoa3.hmRT3", "tdoa3.hmRT4"]
         vars: ["tdoa3.hmD0", "tdoa3.hmD1", "tdoa3.hmD2",
-               "tdoa3.hmD3", "tdoa3.hmD4"]
-      
-      # TWR ranges
-      twr_ranges:
+               "tdoa3.hmD3", "tdoa3.hmD4"]              # 20 bytes
+
+      # Inter-drone chords [m]: leader then follower.
+      swarm_chords:
         frequency: 10
-        vars: ["ranging.distance0", "ranging.distance1", "ranging.distance2"]
-        
-    #  topic_name1:
-    #    frequency: 10 # Hz
-    #    vars: ["stateEstimateZ.x", "stateEstimateZ.y", "stateEstimateZ.z", "pm.vbat"]
-    #  topic_name2:
-    #    frequency: 1 # Hz
-    #    vars: ["stabilizer.roll", "stabilizer.pitch", "stabilizer.yaw"]
-  # firmware parameters for all drones (use robot_types/type_name to set per type, or
-  # robots/drone_name to set per drone)
+        vars: ["tdoa3.hmD5", "tdoa3.hmD6"]              # 8 bytes
 
 
   firmware_params:
@@ -142,8 +140,8 @@ all:
       enHighLevel: 1
 
     stabilizer:
-      estimator: 2 # 1: complementary, 2: kalman
-      controller: 1 # 1: PID, 2: mellinger
+      estimator: 2    # 1: complementary, 2: kalman
+      controller: 1   # 1: PID, 2: mellinger
 
     # velCtlPid:
     #   vxKp: 17.0
@@ -154,16 +152,16 @@ all:
     #   vyKi: 14.0
     #   vyKd: 1.0
     #   vyKFF: 0.0
-    posCtlPid:
-      xKp: 1.2
-      # xKi: 0.05
-      # xKd: 0.1
-      yKp: 1.2
-      # yKi: 0.05
-      # yKd: 0.1
-      # zKp: 2.0
-      # zKi: 0.70
-      # zKd: 0.1
+    # posCtlPid:
+    #   xKp: 1.2
+    #   xKi: 0.05
+    #   xKd: 0.1
+    #   yKp: 1.2
+    #   yKi: 0.05
+    #   yKd: 0.1
+    #   zKp: 2.0
+    #   zKi: 0.70
+    #   zKd: 0.1
     # ctrlMel:
     #   mass: 0.040 #mass for crazyflie with box
     #   kp_xy: 0.1
@@ -185,12 +183,33 @@ all:
     #   solidGreen: 0 # if set to solid color
     #   solidRed: 0 # if set to solid color
     #   headlightEnable: 0
+
     locSrv:
       extPosStdDev: 1e-3
       extQuatStdDev: 0.5e-1
+    
+    # Parameters for the Swarm module
+    loco:
+      mode: 3              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
+      
+    tdoa3:
+      hmTwr: 1
+      hmTwrEstPos: 1
+      hmTdoa: 0            # Undertermined on 3 anchors
+      hmTwrTXPos: 0        # keep at 0 -- see below
+      hmOutTh: 0.12
+      hmMaxReply: 0.0
+      hmTofAge: 200
+      twrStd: 0.05
+      hmLId0: 0   # origin
+      hmLId1: 1   # x+
+      hmLId2: 2   # y+
+      hmLId3: 3   
+      hmLId4: 4
+      # stddev: 0.1        # TDoA noise
 
-    # kalman:
-    #   resetEstimation: 1
+    kalman:
+      robustTwr: 1
 
     # --- trajectory -------------------------------------------------------
     # Coefficients come from tools/swarm/fit_elevation.py
@@ -263,24 +282,19 @@ all:
       pW: 0.25             # initial variance, rate error [(rad/s)^2]
       pR: 0.09             # initial variance, radius [m^2]
 
-    # Parameters for the Swarm module
-    loco:
-      mode: 3              # 1 = TWR, 3 = TDoA3 (required for hybrid mode)
-    tdoa3:
-      hmTwr: 1
-      hmTdoa: 0            # Undertermined on 3 anchors
-      hmTwrEstPos: 1
-      hmTwrTXPos: 0        # keep at 0 -- see below
-      hmOutTh: 0.5
-      hmMaxReply: 0.0
-      hmTofAge: 200
-      twrStd: 0.05
-      hmLId0: 0   # origin
-      hmLId1: 1   # x+
-      hmLId2: 2   # y+
-      hmLId3: 3   
-      hmLId4: 4
-      # stddev: 0.1        # TDoA noise
+    # --- controller -------------------------------------------------------
+    swarmCtrl:                 # NEW group
+      en: 0                    # engage from your ROS node after takeoff
+      rTgt: 0.60
+      wNom: 0.20
+      kPhi: 0.0                # gain for phase error (0 for single-drone tests)
+      kR: 0.8
+      vMaxT: 0.35
+      vMaxR: 0.25
+      rampS: 3.0
+      sigTh: 15.0
+      sigR: 0.25
+      needC: 0                 # 0 for single-drone tests (with kPhi: 0)
 
   reference_frame: "world"
   broadcasts:
